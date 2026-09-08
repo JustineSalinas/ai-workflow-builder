@@ -103,15 +103,17 @@ At least 3 required; this has 7:
   star, inline click-to-edit prompts.
 - **Animated active edges** — the edge the run is currently traversing
   gets a marching-ants dash animation and a glow.
-- **Error handling** — 400 on bad input (before any model call), 502 on a
-  non-retryable provider error, 504 on timeout, 422-equivalent via the
-  run's `error` field when the model can't be coerced into YES/NO after a
-  repair attempt; the kill switch pattern is available via `LLM_ENABLED`
-  in `decide.ts` (unset by default — the stub fallback already gives every
-  environment a zero-cost mode).
+- **Error handling** — 400 on bad input (before any model call), a
+  provider/timeout error surfaces as the run's `error` field (shown as a
+  banner in the log panel) when the model can't be coerced into YES/NO
+  after one repair attempt; the run always finishes in a terminal state
+  (`completed` or `error`), never hangs.
 
 Not built: a "retry this one failed node" button (a full rerun via Run
-covers most of the same need, but doesn't resume mid-graph).
+covers most of the same need, but doesn't resume mid-graph), and no
+`LLM_ENABLED`-style kill switch — every run always attempts a real model
+call (or the stub, if no key is set). Worth adding if this were used
+somewhere real.
 
 ## Notes on the LLM call itself
 
